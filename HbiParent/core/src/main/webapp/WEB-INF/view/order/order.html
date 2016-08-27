@@ -1,0 +1,212 @@
+<#--
+ * description: Fruit.html
+ * version: 1.0 
+ * author:taotao.xu@hand-china.com
+ * #{copyright}#
+ * 
+-->
+<#include "../include/head.html">
+<meta charset="UTF-8">
+<body style="padding: 10px;">
+	<form id="orderForm"></form>
+    <div id="orderGrid" style="margin: 0; padding: 0"></div>
+    <script type="text/javascript">
+    $(function() {
+    	debugger;
+         //vol
+        window['orderForm'] = $("#orderForm").ligerForm({
+            fields : [{
+            	display:'<@spring.message "hap.org.headers.companyname"/>',
+            	name:'companyIdLov',
+            	type:'popup',
+            	newline:false,
+            	textField:'companyName',
+            	group:'订单查询界面',
+            	width: 120,
+            	editor:${lovService.getLov(base.contextPath,base.locale,"showCompany")} 
+        },{
+        	display:'<@spring.message "hap.org.customer.customername"/>',
+        	name:'customerId',
+        	type:'popup',
+        	newline:false,
+        	textField:'customerName',
+        	width: 120,
+        	options: $.extend(${lovService.getLov(base.contextPath, base.locale, "showCustomer")},{
+        	    onLoadData: function() {
+        	        this.setParm('companyId', $.ligerui.get('companyIdLov').getValue())
+        	    }
+        	})
+       
+    }
+,   {
+        type : 'text',
+        label : '<@spring.message "hap.org.headers.ordernumber"/>',
+        name : 'orderNumber',
+        newline : false,
+        width: 120
+    },
+    {
+    	display:'<@spring.message "hap.org.headers.inventoryItemId"/>',
+    	name:'inventoryItemId',
+    	type:'popup',
+    	width: 120,
+    	textField:'itemDescription',
+    	editor:${lovService.getLov(base.contextPath,base.locale,"showitem")
+}},
+{
+    display: '<@spring.message "hap.org.headers.orderStatus"/>',
+    name: "fruitId",
+    width: 120,
+    type: "select",
+    newline : false,
+    textField:"fruitName",
+    options: {
+        readonly: false,
+        valueField: 'fruitId',
+        textField: 'fruitName',
+        url: '${base.contextPath}/ass/fruit/query',
+        triggerToLoad: true//注意
+/*                  onBeforeOpen: function() {
+            //这里设置查询参数
+            this.setParm('fruitId', "1");
+            this.triggerLoaded = false;//注意 
+        }  */
+    }
+}],
+//查询按钮
+            buttons : [ {
+                text : '<@spring.message "hap.query"/>',
+                disabled : false,
+                width : 60,
+                click : function() {
+                    Hap.gridQuery({
+                        form : fruitForm,
+                        grid : fruitGrid
+                    })
+                }
+            },
+            //重置
+            {
+                text    : '<@spring.message "hap.reset"/>',
+                disabled: false,
+                width   : 60,
+                click   : function () {
+                	orderForm.reset();
+                }
+            },
+            //导出Excel
+            {
+                text    : '<@spring.message "hap.download"/>',
+                disabled: false,
+                width   : 60,
+                click   : function () {
+                	orderForm.reset();
+                }
+            }
+            ]
+        });
+       
+        <#--
+        * Description:
+        *   新建新建窗口
+        -->
+        window.newProfile = function(){
+            window.popWin = $.ligerDialog.open({
+                width : 950,
+                height : 650,
+                url : 'order_detail.html'
+            });
+        }
+        
+        <#--
+        * Description:
+        *   新建编辑窗口
+        -->
+        window.editCode = function(){
+            window.popWin = $.ligerDialog.open({
+                width : 950,
+                height : 650,
+                url : 'order_detail2.html'
+            });
+        }
+//行
+        window['orderGrid'] = $("#orderGrid").ligerGrid({
+            unSetValidateAttr : false,
+            columns : [  
+				{
+                display : '<@spring.message "hap.test.sales.ordernmuber"/>',
+                name : 'orderNumber',
+                valueField : 'orderNumber',
+                align : 'left',
+                width : 120,
+                editor : {
+                    type: 'tl',
+                    idField: 'orderNumber',
+                    dto: 'hap.org.Headers'
+                  } ,
+                render : function (rowdata) {
+                    return '<a href="#" onclick="editCode"></a>'
+                }
+            },{
+                display : '<@spring.message "hap.org.headers.companyname"/>',
+                name : 'companyName',
+                align : 'left',
+                width : 120,
+                editor : {
+                    type : 'text'
+                }, 
+                validate: {
+                    required: true
+                }
+            },{
+                display : '<@spring.message "hap.org.customer.customerName"/>',
+                name : 'customerName',
+                align : 'left',
+                width : 120,
+                editor : {
+                    type : 'text'
+                },
+                validate: {
+                    required: true
+                }
+            }, {
+                display : '<@spring.message "hap.org.headers.orderDate"/>',
+                name : 'orderDate',
+                align : 'left',
+                width : 150,
+                
+            }, {
+                display : '<@spring.message "hap.org.headers.orderStatus"/>',
+                name : 'orderStatus',
+                align : 'left',
+                width : 150,
+             
+            },
+            {
+                display : '<@spring.message "hap.org.headers.orderMoney"/>',
+                name : 'orderMoney',
+                align : 'left',
+                width : 150,
+                
+            }],
+            url : '${base.contextPath}/org/Headers/query',
+            toolbar : {
+                items : [ {
+                    text : '<@spring.message "hap.new"/>',
+                    disable : false,
+                    click : newProfile,
+                    icon : 'add'
+                }, {
+                    line : true
+                }]
+            },
+            enabledEdit : true,
+            width : '99%',
+            height : '98%',
+            checkbox : true
+        });
+    });
+    
+    </script>
+</body>
+</html>

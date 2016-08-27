@@ -1,0 +1,221 @@
+<#--
+ * description: Fruit.html
+ * version: 1.0 
+ * author:taotao.xu@hand-china.com
+ * #{copyright}#
+ * 
+-->
+<#include "../include/head.html">
+<body style="padding: 10px;">
+	<form id="fruitForm"></form>
+    <div id="fruitGrid" style="margin: 0; padding: 0"></div>
+    <script type="text/javascript">
+    $(function() {
+    	debugger;
+    	//编辑
+    	 window.editCode = function (fruitId) {
+             var url = 'sys_message_fruit_edit.html';
+             if (fruitId) {
+                 url = url + '?isedit=1&fruitId=' + fruitId;
+             }
+             window.popWin = $.ligerDialog.open({
+                 width : 900,
+                 height: 550,
+                 url   : url
+             });
+         };
+         //vol
+        window['fruitForm'] = $("#fruitForm").ligerForm({
+            fields : [ {
+            	display:'showFruit',
+            	name:'fruitId',
+            	type:'popup',
+            	newline:false,
+            	textField:'fruitName',
+            	group:'水果信息',
+            	editor:${lovService.getLov(base.contextPath,base.locale,"showFruit")
+        }},
+        //select级联
+        {
+            display: "FruitSelect",
+            name: "fruitId",
+            width: 120,
+            type: "select",
+            textField:"fruitName",
+            options: {
+                readonly: false,
+                valueField: 'fruitId',
+                textField: 'fruitName',
+                url: '${base.contextPath}/ass/fruit/query',
+                triggerToLoad: true//注意
+/*                  onBeforeOpen: function() {
+                    //这里设置查询参数
+                    this.setParm('fruitId', "1");
+                    this.triggerLoaded = false;//注意 
+                }  */
+            }
+        },{
+            display: "DescSelect",
+            name: "fruitSelect",
+            width: 120,
+            type: "select",
+            textField:"fruitDescription",
+            options: {
+                readonly: false,
+                valueField: 'fruitId',
+                textField: 'fruitDescription',
+                url: '${base.contextPath}/ass/fruit/query',
+                triggerToLoad: true,//注意
+             onBeforeOpen: function() {
+                    //这里设置查询参数
+                    this.setParm('fruitId', liger.get('fruitId').getValue());
+                    this.triggerLoaded = false;//注意 
+                }  
+            }
+        },
+
+        
+{
+                type : 'text',
+                label : '<@spring.message "hfs.ass.fruit.fruitname"/>',
+                name : 'fruitName',
+                newline : false,
+                width: 120
+            }, {
+                type : 'text',
+                label : '<@spring.message "hfs.ass.fruit.fruitdescription"/>',
+                name : 'fruitDescription',
+                width: 120
+            }],
+            buttons : [ {
+                text : '<@spring.message "hap.query"/>',
+                disabled : false,
+                width : 60,
+                click : function() {
+                    Hap.gridQuery({
+                        form : fruitForm,
+                        grid : fruitGrid
+                    })
+                }
+            },
+            //上传
+            {
+                text : '附件上传',
+                disabled : false,
+                width : 60,
+                click : function() {
+                	window.popWin=$.ligerDialog.open({
+                		load :false,
+                		width : 800,
+                		height : 500,
+                		title :'<@spring.message "sysfile.upload"/>',
+                		url:'upLoadFile.html'
+                	})
+                }
+            }]
+        });
+       
+       
+
+        window['fruitGrid'] = $("#fruitGrid").ligerGrid({
+            unSetValidateAttr : false,
+            columns : [ {
+                display : '<@spring.message "hfs.ass.fruit.fruitid"/>',
+                name : 'fruitId',
+                align : 'left',
+                width : 120
+            },{
+                display : 'fruitCode',
+                name : 'fruitCode',
+                align : 'left',
+                width : 120,
+                editor : {
+                    type : 'text'
+                }, 
+                validate: {
+                    required: true
+                }
+            },{
+                display : '<@spring.message "hfs.ass.fruit.fruitname"/>',
+                name : 'fruitName',
+                align : 'left',
+                width : 120,
+                editor : {
+                    type : 'text'
+                },
+                validate: {
+                    required: true
+                }
+            }, {
+                display : '<@spring.message "hfs.ass.fruit.fruitdescription"/>',
+                name : 'fruitDescription',
+                align : 'left',
+                width : 150,
+                editor : {
+                	  type : 'tl',
+                      idField:'fruitId',
+                      dto:'hfs.ass.dto.Fruit'
+                }
+            }, {
+                display : '<@spring.message "hfs.ass.fruit.mydate"/>',
+                name : 'myDate',
+                align : 'left',
+                width : 150,
+                editor : {
+                	  type : 'date',
+                      idField:'fruitId',
+                      dto:'hfs.ass.dto.Fruit'
+                }
+            },{
+            	//编辑
+                display: '<@spring.message "hap.action"/>',
+                width  : 100,
+                align  : 'center',
+                render : function (rowdata) {
+                    return '<a href="#" onclick="editCode(' + rowdata.fruitId + ')"><@spring.message "hap.edit"/></a>'
+                }
+            }],
+            url : '${base.contextPath}/ass/fruit/query',
+            toolbar : {
+                items : [ {
+                    text : '<@spring.message "hap.new"/>',
+                    disable : false,
+                    click : function() {
+                        fruitGrid.addRow({})
+                    },
+                    icon : 'add'
+                }, {
+                    line : true
+                }, {
+                    text : '<@spring.message "hap.delete"/>',
+                    click : function() {
+                          Hap.gridDelete({
+                            grid : fruitGrid,
+                            url : '${base.contextPath}/ass/fruit/delete'
+                        })
+                    	fruitGrid.deleteSelectedRow();
+                    },
+                    icon : 'delete'
+                }, {
+                    line : true
+                }, {
+                    text : '<@spring.message "hap.save"/>',
+                    click : function() {
+                        Hap.gridSave({
+                            grid : fruitGrid,
+                            url : '${base.contextPath}/ass/fruit/submit'
+                        })
+                    },
+                    icon : 'save'
+                }]
+            },
+            enabledEdit : true,
+            width : '99%',
+            height : '98%',
+            checkbox : true
+        });
+    });
+    
+    </script>
+</body>
+</html>

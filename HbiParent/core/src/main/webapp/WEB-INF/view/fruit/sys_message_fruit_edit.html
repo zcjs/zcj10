@@ -1,0 +1,79 @@
+<#-- * description: 快速编码界面 * version: 1.0 *
+author:zhiwei.zhang@hand-china.com * #{copyright}# * --> <#include
+"../include/head.html">
+<body style="padding: 15px">
+	<form id="mainform" method="post"
+		enctype="application/json;charset=UTF-8"></form>
+	<script type="text/javascript">
+        function f_save() {        	
+            Hap.submitForm({
+                form:form,
+                url:'${base.contextPath}/ass/fruit/update',
+                success:function(json, opt){
+                    $.ligerDialog.success("<@spring.message "hap.tip.success"/>", '<@spring.message "hap.tip.info"/>', function(){
+                    	parent.fruitGrid.reload();
+                        f_cancel();
+                    });
+                }
+            });
+        }
+        function f_cancel() {
+            var dialog = frameElement.dialog;
+            dialog.close();
+        }
+        
+        <#assign isedit = (RequestParameters.isedit!'0')/>        
+        //表单底部按钮 
+        Hap.setFormDefaultBtn(f_cancel, f_save);
+    
+        var mainform = $("#mainform");
+        var form  = mainform.ligerForm({
+            inputWidth : 280,
+            fields : [{
+                name: "fruitId",
+                type: "hidden"
+            },{           //fruitCode
+                display : '<@spring.message "sys.fruit.fruitCode"/>',
+                name : "fruitCode",
+                type : "text",
+                validate : {
+                    required : true
+                }
+            },{           //fruitName
+                display : '<@spring.message "sys.fruit.fruitname"/>',
+                name : "fruitName",
+                type : "text",
+                options : {
+                	idField:'fruitId',
+                    dto:'hfs.ass.dto.Fruit'
+                },
+                validate : {
+                    required : true
+                }
+            },{          //fruitDescription
+                display : '<@spring.message "sys.fruit.fruitdescription"/>',
+                name : 'fruitDescription',
+                type : 'tl',
+                options : {
+                	idField:'fruitId',
+                    dto:'hfs.ass.dto.Fruit'
+                },
+            } ,{          //creationDate
+                display : '<@spring.message "sys.fruit.myDate"/>',
+                name : 'myDate',
+                type:'date',
+	            options : {
+	            	type:'date',	            
+                    idField:'fruitId',
+                    dto:'hfs.ass.dto.Fruit'
+	            }
+            }]
+        });    
+        mainform.attr("action", "${base.contextPath}/ass/fruit/submit");
+   
+		<#if isedit == '1'>
+        Hap.loadForm({form:form,url:'${base.contextPath}/ass/fruit/query',para:{fruitId:${RequestParameters.fruitId}}})
+       </#if>
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hap.org.mapper.HeadersMapper">
+
+	<resultMap id="BaseResultMap" type="hap.org.dto.Headers" extends="com.hand.hap.mapper.StdMapper.STD">
+        <result column="ORDER_NUMBER" property="orderNumber" jdbcType="VARCHAR"/>
+        <result column="ORDER_DATE" property="orderDate" jdbcType="DATE"/>
+        <result column="ORDER_STATUS" property="orderStatus" jdbcType="VARCHAR"/>
+        <result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR"/>
+        <result column="CUSTOMER_NAME" property="customerName" jdbcType="VARCHAR"/>
+        <result column="ORDER_MONEY" property="orderMoney" jdbcType="DECIMAL"/>
+        
+        <result column="COMPANY_ID" property="companyId" jdbcType="DECIMAL"/>
+        <result column="CUSTOMER_ID" property="customerId" jdbcType="DECIMAL"/>
+        
+    </resultMap>
+    
+	<select id="selectByHeaders" parameterType="hap.org.dto.Headers" resultMap="BaseResultMap">
+		  select he.ORDER_NUMBER,
+				 co.COMPANY_NAME,
+				 cus.CUSTOMER_NAME,
+				 he.ORDER_DATE,
+				 he.ORDER_STATUS,
+				 it.INVENTORY_ITEM_ID,
+				 li.ORDERD_QUANTITY * li.UNIT_SELLING_PRICE ORDER_MONEY
+			from hap_ar_customers cus,
+			 	 hap_inv_inventory_items it,
+			 	 hap_om_order_headers he,
+			 	 hap_om_order_lines li,
+			 	 hap_org_companys co
+
+		<where>
+			 and cus.COMPANY_ID = co.COMPANY_ID
+	  		 and cus.CUSTOMER_ID = he.CUSTOMER_ID
+			 and it.INVENTORY_ITEM_ID = li.INVENTORY_ITEM_ID
+			 and he.COMPANY_ID = co.COMPANY_ID
+			 and he.HEADER_ID = li.HEADER_ID
+        	<if test="companyName != null">
+                and co.company_name like #{companyName,jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null">
+                and cus.customer_name like #{customerName,jdbcType=VARCHAR}
+            </if>
+            <if test="orderNumber != null">
+                and order_number like #{orderNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="inventoryItemId != null">
+                and it.inventory_item_id like #{inventoryItemId,jdbcType=VARCHAR}
+            </if>
+            <if test="orderStatus != null">
+                AND order_status like #{orderStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    
+    
+    <insert id="insertHeaders" parameterType="hap.org.dto.Headers">
+    	INSERT INTO hap_om_order_headers
+    	<trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNumber != null" >
+        ORDER_NUMBER,
+      </if>
+      <if test="companyId != null" >
+        COMPANY_ID,
+      </if>
+      <if test="customerId != null" >
+        CUSTOMER_ID,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="orderStatus != null" >
+        ORDER_STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNumber != null" >
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=DECIMAL},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=Date},
+      </if>
+      <if test="orderStatus != null" >
+        #{orderStatus,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    </insert>
+
+</mapper>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<#include "../include/head.html">
+<body style="padding: 15px">
+	<form id="mainform" method="post" enctype="application/json;charset=UTF-8">
+	</form>
+	<div id="editGrid" style="margin-left: 2px; margin-top: 2px;"></div>
+	<script type="text/javascript">
+        function f_save() {
+            Hap.submitForm({
+                form:form,
+                url:'${base.contextPath}/ass/fruit/update',
+                success:function(json,opt){
+                    $.ligerDialog.success("<@spring.message "hap.tip.success"/>", '<@spring.message "hap.tip.info"/>', function(){
+                        parent.fruitGrid.reload();
+                        f_cancel();
+                    });
+                    
+                }
+            });
+        }
+        function f_cancel() {
+            var dialog = frameElement.dialog;
+            dialog.close();
+            
+            
+        }
+        <#assign isedit = (RequestParameters.isedit!'0')/>        
+        //表单底部按钮 
+        Hap.setFormDefaultBtn(f_cancel, f_save);
+    
+        var mainform = $("#mainform");
+        var form  = mainform.ligerForm({
+            inputWidth : 280,
+            fields : [{
+                name:'fruitId',
+                type:'hidden'
+            },{
+                display : '<@spring.message "fruit.fruitCode"/>',
+                name : "fruitCode",
+                type : "text",
+                //width:150,
+                validate : {
+                    required : true
+                }
+            },{
+                display : '<@spring.message "fruit.fruitName"/>',
+                name : 'fruitName',
+                type : 'text',
+                options : {
+                    idField:'fruitId',
+                    dto:'hfs.ass.dto.Fruit'
+                },
+                validate : {
+                    required : true
+                }
+            },{
+                display : '<@spring.message "fruit.fruitDescription"/>',
+                name : 'fruitDescription',
+                type : 'tl',
+                options : {
+                    idField:'fruitId',
+                    dto:'hfs.ass.dto.Fruit'
+                },
+                validate : {
+                    required : true
+                }
+            } ]
+        });
+    
+        mainform.attr("action", "${base.contextPath}/ass/fruit/submit");
+        <#if isedit == '1'>
+        Hap.loadForm({form:form,url:'${base.contextPath}/ass/fruit/query',para:{fruitId:${RequestParameters.fruitId}}})
+       </#if>
+        </script>
+</body>
+</html>
