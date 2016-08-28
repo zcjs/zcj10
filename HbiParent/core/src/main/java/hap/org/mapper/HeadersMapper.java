@@ -9,7 +9,7 @@ import hap.org.dto.Headers;
 public interface HeadersMapper extends Mapper<Headers>{
 List<Headers> selectByHeaders(Headers headers);
     
-List<Headers> insertHeaders(Headers headers);
+ void insertHeaders(Headers headers);
     int updateHeaders(Headers headers);
     void deleteHeaders(Headers headers);
 }

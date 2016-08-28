@@ -11,7 +11,7 @@
         <result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR"/>
         <result column="CUSTOMER_NAME" property="customerName" jdbcType="VARCHAR"/>
         <result column="ORDER_MONEY" property="orderMoney" jdbcType="DECIMAL"/>
-        
+        <result column="HEADER_ID" property="headerId" jdbcType="DECIMAL"/>
         <result column="COMPANY_ID" property="companyId" jdbcType="DECIMAL"/>
         <result column="CUSTOMER_ID" property="customerId" jdbcType="DECIMAL"/>
         
@@ -23,6 +23,7 @@
 				 cus.CUSTOMER_NAME,
 				 he.ORDER_DATE,
 				 he.ORDER_STATUS,
+				 he.HEADER_ID,
 				 it.INVENTORY_ITEM_ID,
 				 li.ORDERD_QUANTITY * li.UNIT_SELLING_PRICE ORDER_MONEY
 			from hap_ar_customers cus,
@@ -47,10 +48,13 @@
                 and order_number like #{orderNumber,jdbcType=VARCHAR}
             </if>
             <if test="inventoryItemId != null">
-                and it.inventory_item_id like #{inventoryItemId,jdbcType=VARCHAR}
+                and it.inventory_item_id like #{inventoryItemId,jdbcType=DECIMAL}
             </if>
             <if test="orderStatus != null">
-                AND order_status like #{orderStatus,jdbcType=VARCHAR}
+                AND he.order_status like #{orderStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="headerId != null">
+                AND he.header_id = #{headerId,jdbcType=DECIMAL}
             </if>
         </where>
     </select>

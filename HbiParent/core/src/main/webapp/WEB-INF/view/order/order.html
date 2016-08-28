@@ -122,11 +122,11 @@
         * Description:
         *   新建编辑窗口
         -->
-        window.editCode = function(){
+        window.editCode = function(id){
             window.popWin = $.ligerDialog.open({
                 width : 950,
                 height : 650,
-                url : 'order_detail2.html'
+                url : 'order_detail2.html?isedit=1&headerId=' + id
             });
         }
 //行
@@ -139,15 +139,11 @@
                 valueField : 'orderNumber',
                 align : 'left',
                 width : 120,
-                editor : {
-                    type: 'tl',
-                    idField: 'orderNumber',
-                    dto: 'hap.org.Headers'
-                  } ,
                 render : function (rowdata) {
-                    return '<a href="#" onclick="editCode"></a>'
+                    return '<a href="#" onclick="editCode('+rowdata.headerId+')">'+rowdata.orderNumber+'</a>'
                 }
-            },{
+            },
+            {
                 display : '<@spring.message "hap.org.headers.companyname"/>',
                 name : 'companyName',
                 align : 'left',

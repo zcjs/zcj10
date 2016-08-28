@@ -19,5 +19,5 @@ public interface IHeadersService extends IBaseService<Headers>, ProxySelf<IHeade
 	    
 	    
 	    //插入
-	    List<Headers> insertHeaders(IRequest requestContext, List<Headers> headerslist);
+	    void insertHeaders(IRequest requestContext, List<Headers> headerslist);
 }

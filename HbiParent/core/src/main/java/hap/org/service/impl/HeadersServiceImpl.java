@@ -12,6 +12,9 @@ import com.hand.hap.system.service.impl.BaseServiceImpl;
 import hap.org.dto.Headers;
 import hap.org.mapper.HeadersMapper;
 import hap.org.service.IHeadersService;
+
+
+
 @Service
 public class HeadersServiceImpl extends BaseServiceImpl<Headers> implements IHeadersService{
 
@@ -28,34 +31,23 @@ public class HeadersServiceImpl extends BaseServiceImpl<Headers> implements IHea
 
 
 //插入
-	
-		@Override
-		public List<Headers> insertHeaders(IRequest requestContext, List<Headers> headerslist) {
+	@Override
+		public void insertHeaders(IRequest requestContext, List<Headers> headerslist) {
 			// TODO Auto-generated method stub
 			for (Headers headers : headerslist) {
+				System.out.println(headers);
 				headersMapper.insertHeaders(headers);
 				System.out.println(headers);
 	        }
-			
-	        return headerslist;
 		}
 
 
 
-		@Override
-		public List<Headers> update(IRequest requestContext, List<Headers> headerslist) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-
-
-		
-
-
-
-
-
+	@Override
+	public List<Headers> update(IRequest requestContext, List<Headers> headerslist) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 }

@@ -1,18 +1,11 @@
-<#--
- * description: Fruit.html
- * version: 1.0 
- * author:taotao.xu@hand-china.com
- * #{copyright}#
- * 
--->
 <#include "../include/head.html">
 <body style="padding: 10px;">
-	<form id="order_detailForm"></form>
-    <div id="order_detailGrid" style="margin: 0; padding: 0"></div>
+	<form id="order_detail2Form"></form>
+    <div id="order_detail2Grid" style="margin: 0; padding: 0"></div>
     <script type="text/javascript">
-    $(function() {
+    
     	
-    	//头保存按钮触发
+    	/* //头保存按钮触发
     	window.dosave = function f_save() {        	
             Hap.submitForm({
                 form:order_detailForm,
@@ -21,11 +14,17 @@
                     $.ligerDialog.success("<@spring.message "hap.tip.success"/>", '<@spring.message "hap.tip.info"/>');
                 }
             });
-        }
-    	debugger;
-         //vol
-        window['order_detailForm'] = $("#order_detailForm").ligerForm({
-            fields : [  
+        } */
+        <#assign isedit = (RequestParameters.isedit!'0')/>
+        var order_detail2Form = $("#order_detail2Form");
+        var form  = order_detail2Form.ligerForm({
+            inputWidth : 280,
+            fields : [
+                      //订单头ID
+                       {
+                        name: "headerId",
+                        type: "hidden"
+                        },
                         //订单编号
                         {
                             type : 'text',
@@ -34,17 +33,27 @@
                             valueField : 'orderNumber',
                             newline : false,
                             group:'订单明细',
-                            width: 120
+                            width: 120,
+                            validate : {
+                                required : true
+                            }
                             },
                             //公司名称
                             {
                                 	display:'<@spring.message "hap.org.headers.companyname"/>',
                                 	name:'companyIdLov',
                                 	type:'popup',
+                                	options : {
+                                    	idField:'headerId',
+                                        dto:'hap.org.dto.Headers'
+                                    },
                                 	newline:false,
                                 	textField:'companyName',
                                 	valueField:'companyId',
                                 	width: 120,
+                                	validate : {
+                                        required : true
+                                    },
                                 	editor:${lovService.getLov(base.contextPath,base.locale,"showCompany")} 
                             },
                             //客户名称
@@ -52,10 +61,17 @@
                             	display:'<@spring.message "hap.org.customer.customername"/>',
                             	name:'customerId',
                             	type:'popup',
+                            	options : {
+                                	idField:'headerId',
+                                    dto:'hap.org.dto.Headers'
+                                },
                             	newline:false,
                             	textField:'customerName',
                             	valueField :'customerId',
                             	width: 120,
+                            	validate : {
+                                    required : true
+                                },
                             	options: $.extend(${lovService.getLov(base.contextPath, base.locale, "showCustomer")},{
                             	    onLoadData: function() {
                             	        this.setParm('companyId', $.ligerui.get('companyIdLov').getValue())
@@ -69,6 +85,14 @@
                                     name : 'orderDate',
                                     valueField : 'orderDate',
                                     align : 'left',
+                                    options : {
+                                    	idField:'headerId',
+                                        dto:'hap.org.dto.Headers'
+                                    },
+                                    validate : {
+                                        required : true
+                                    },
+                                    format : "yyyy-MM-dd",
                                     width : 120,
                                     type : 'date'
                                 },
@@ -77,6 +101,10 @@
                                     type : 'text',
                                     label : '<@spring.message "hap.org.headers.ordermoney"/>',
                                     name : 'ordermoney',
+                                    options : {
+                                    	idField:'headerId',
+                                        dto:'hap.org.dto.Headers'
+                                    },
                                     valueField : 'orderMoney',
                                     newline : false,
                                     width: 120
@@ -86,190 +114,27 @@
                                     type : 'text',
                                     label : '<@spring.message "hap.org.headers.orderStatus"/>',
                                     name : 'orderStatus',
+                                    options : {
+                                    	idField:'headerId',
+                                        dto:'hap.org.dto.Headers'
+                                    },
                                     valueField:"orderStatus",
                                     newline : false,
                                     width: 120
                                 }
           ],
-            buttons : [ {
-                text : '<@spring.message "hap.save"/>',
-                disabled : false,
-                width : 60,
-                click : dosave
-            },
-            //�ϴ�
-            {
-                text : '�����ϴ�',
-                disabled : false,
-                width : 60,
-                click : function() {
-                	window.popWin=$.ligerDialog.open({
-                		load :false,
-                		width : 800,
-                		height : 500,
-                		title :'<@spring.message "sysfile.upload"/>',
-                		url:'upLoadFile.html'
-                	})
-                }
-            }]
-        });
-       
-        window['order_detailGrid'] = $("#order_detailGrid").ligerGrid({
-            unSetValidateAttr : false,
-            columns : [{
-            //行号
-                display : '<@spring.message "hap.org.lines.lineNumber"/>',
-                name : 'lineNumber',
-                align : 'left',
-                width : 120
-            },
-            //物料编码
-        {
-    	display:'<@spring.message "hap.org.headers.itemCode"/>',
-    	name:'itemCode',
-    	type:'popup',
-    	width: 120,
-    	textField:'itemCode',
-    	editor:${lovService.getLov(base.contextPath,base.locale,"showitemcode")
-        }
-       ,
-        validate: {
-            required: true
-        }},
-        //物料描述
-        {
-                display : '<@spring.message "hap.org.items.itemDescription"/>',
-                name : 'itemDescription',
-                newline : false,
-                align : 'left',
-                width : 120,
-                textField:"itemDescription",
-                url: '${base.contextPath}/org/items/query',
-                onBeforeOpen: function() {
-                    //这里设置查询参数
-                    this.setParm('itemCode', liger.get('itemCode').getValue());
-                    this.triggerLoaded = false;//注意 
-                } 
-            },
-            //产品单位
-             {
-                type : 'text',
-                display : '<@spring.message "hap.org.lines.orderQuantityUom"/>',
-                name : 'orderQuantityUom',
-                newline : false,
-                width: 120,
-                textField:"orderQuantityUom",
-                url: '${base.contextPath}/ass/fruit/query',
-                onBeforeOpen: function() {
-                    //这里设置查询参数
-                    this.setParm('itemCode', liger.get('itemCode').getValue());
-                    this.triggerLoaded = false;//注意 
-                } 
-            },
-            //数量
-            {
-                type : 'text',
-                display : '<@spring.message "hap.org.lines.orderdQuantity"/>',
-                name : 'orderdQuantity',
-                newline : false,
-                width: 120,
-                editor : {
-                    type : 'text'
-                },
-                validate: {
-                    required: true
-                }
-            },
-            //销售单价
-            {
-                type : 'text',
-                display : '<@spring.message "hap.org.lines.unitSellingPrice"/>',
-                name : 'unitSellingPrice',
-                newline : false,
-                width: 120,
-                editor : {
-                    type : 'text'
-                },
-                validate: {
-                    required: true
-                }
-            },
-            //金额
-            {
-                display : '<@spring.message "hap.org.headers.orderMoney"/>',
-                name : 'orderMoney',
-                align : 'left',
-                width : 150,
-                newline : false,
-                editor : {
-                    type : 'text'
-                },
-                validate: {
-                    required: true
-                }
-            },
-            //备注
-            {
-                type : 'text',
-                display : '<@spring.message "hap.org.remark"/>',
-                name : 'remark',
-                newline : false,
-                width: 120,
-                editor : {
-                    type : 'text'
-                }
-            }
-            //编辑
-            /* {
-            	//�༭
-                display: '<@spring.message "hap.action"/>',
-                width  : 100,
-                align  : 'center',
-                render : function (rowdata) {
-                    return '<a href="#" onclick="editCode(' + rowdata.fruitId + ')"><@spring.message "hap.edit"/></a>'
-                }
-            } */],
-            //url : '${base.contextPath}/org/oeder_detail/query',
-            toolbar : {
-                items : [ {
-                    text : '<@spring.message "hap.new"/>',
-                    disable : false,
-                    click : function() {
-                    	order_detailGrid.addRow({})
-                    },
-                    icon : 'add'
-                }, {
-                    line : true
-                }, {
-                    text : '<@spring.message "hap.delete"/>',
-                    click : function() {
-                          Hap.gridDelete({
-                            grid : order_detailGrid,
-                            url : '${base.contextPath}/org/order_detail/delete'
-                        })
-                    	order_detailGrid.deleteSelectedRow();
-                    },
-                    icon : 'delete'
-                }, {
-                    line : true
-                }, {
-                    text : '<@spring.message "hap.save"/>',
-                    click : function() {
-                        Hap.gridSave({
-                            grid : order_detailGrid,
-                            url : '${base.contextPath}/org/order_detail/submit'
-                        })
-                    },
-                    icon : 'save'
-                }]
-            },
             enabledEdit : true,
             width : '99%',
             height : '98%',
             checkbox : true
         });
-    });
+
     
+
+
+    <#if isedit == '1'>
+    Hap.loadForm({form:form,url:'${base.contextPath}/org/Headers/query',para:{headerId:${RequestParameters.headerId}}})
+   </#if>
     </script>
 </body>
 </html>

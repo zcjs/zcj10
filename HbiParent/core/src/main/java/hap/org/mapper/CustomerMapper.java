@@ -8,7 +8,7 @@ import hap.org.dto.Companys;
 import hap.org.dto.Customer;
 
 public interface CustomerMapper extends Mapper<Customer>{
-List<Customer> selectByCustomer(Companys companys);
+List<Customer> selectByCustomer(Customer customer);
     
     int insertCustomer(Customer customer);
     int updateCustomer(Customer customer);
