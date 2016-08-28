@@ -7,6 +7,7 @@ import com.hand.hap.core.ProxySelf;
 import com.hand.hap.core.annotation.StdWho;
 import com.hand.hap.system.service.IBaseService;
 
+import hap.org.dto.Companys;
 import hap.org.dto.Headers;
 
 public interface IHeadersService extends IBaseService<Headers>, ProxySelf<IHeadersService>{
@@ -19,5 +20,9 @@ public interface IHeadersService extends IBaseService<Headers>, ProxySelf<IHeade
 	    
 	    
 	    //插入
-	    void insertHeaders(IRequest requestContext, List<Headers> headerslist);
+	    void insertHeaders(IRequest requestContext, Headers headers);
+	    
+	    
+	    //查询companyID
+	    int selectby(IRequest requestContext, Companys company);
 }

@@ -24,6 +24,7 @@
 				 he.ORDER_DATE,
 				 he.ORDER_STATUS,
 				 he.HEADER_ID,
+				 co.COMPANY_ID,
 				 it.INVENTORY_ITEM_ID,
 				 li.ORDERD_QUANTITY * li.UNIT_SELLING_PRICE ORDER_MONEY
 			from hap_ar_customers cus,
@@ -56,11 +57,17 @@
             <if test="headerId != null">
                 AND he.header_id = #{headerId,jdbcType=DECIMAL}
             </if>
+            <if test="companyId != null">
+                AND co.company_id = #{companyId,jdbcType=DECIMAL}
+            </if>
         </where>
     </select>
     
     
-    <insert id="insertHeaders" parameterType="hap.org.dto.Headers">
+    <insert id="insertHeaders" parameterType="hap.org.dto.Headers" useGeneratedKeys="true" keyProperty="headerId">
+     <selectKey resultType="Long" keyProperty="headerId" order="BEFORE">
+       select (max(header_id)+1)as headerId from hap_om_order_headers
+    </selectKey>
     	INSERT INTO hap_om_order_headers
     	<trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderNumber != null" >
@@ -90,12 +97,23 @@
         #{customerId,jdbcType=DECIMAL},
       </if>
       <if test="orderDate != null" >
-        #{orderDate,jdbcType=Date},
+        #{orderDate,jdbcType=DATE},
       </if>
       <if test="orderStatus != null" >
         #{orderStatus,jdbcType=VARCHAR},
       </if>
     </trim>
     </insert>
-
+	
+	<select id="selectby" parameterType="hap.org.dto.Companys" resultType="int">
+		  select COMPANY_ID
+			from  hap_org_companys 
+		<where>
+        	<if test="companyName != null">
+                and company_name like #{companyName,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    
+	
 </mapper>

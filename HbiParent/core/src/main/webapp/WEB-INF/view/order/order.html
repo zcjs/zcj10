@@ -60,28 +60,33 @@
     type: "select",
     newline : false,
     textField:"fruitName",
-    options: {
-        readonly: false,
-        valueField: 'fruitId',
-        textField: 'fruitName',
-        url: '${base.contextPath}/ass/fruit/query',
-        triggerToLoad: true//注意
-/*                  onBeforeOpen: function() {
-            //这里设置查询参数
-            this.setParm('fruitId', "1");
-            this.triggerLoaded = false;//注意 
-        }  */
+    options : {
+        valueField : 'orderStatus',
+        data : [ {
+     	   headerId : 'orderStatus',
+            text : '新建'
+        }, {
+     	   headerId : 'orderStatus',
+            text : '已提交'
+        },
+        {
+     	   headerId : 'orderStatus',
+            text : '已审批'
+        } ,{
+     	   headerId : 'orderStatus',
+            text : '已拒绝'
+        } ]
     }
 }],
-//查询按钮
+           //查询按钮
             buttons : [ {
                 text : '<@spring.message "hap.query"/>',
                 disabled : false,
                 width : 60,
                 click : function() {
                     Hap.gridQuery({
-                        form : fruitForm,
-                        grid : fruitGrid
+                        form : orderForm,
+                        grid : orderGrid
                     })
                 }
             },
@@ -93,17 +98,10 @@
                 click   : function () {
                 	orderForm.reset();
                 }
-            },
-            //导出Excel
-            {
-                text    : '<@spring.message "hap.download"/>',
-                disabled: false,
-                width   : 60,
-                click   : function () {
-                	orderForm.reset();
-                }
             }
-            ]
+
+           ]
+            
         });
        
         <#--
@@ -170,6 +168,7 @@
                 name : 'orderDate',
                 align : 'left',
                 width : 150,
+                format : 'yyyy-MM-dd'
                 
             }, {
                 display : '<@spring.message "hap.org.headers.orderStatus"/>',

@@ -26,6 +26,11 @@
          //vol
         window['order_detailForm'] = $("#order_detailForm").ligerForm({
             fields : [  
+                       //订单头ID
+                      {
+                       name: "headerId",
+                       type: "hidden"
+                      },
                         //订单编号
                         {
                             type : 'text',
@@ -34,7 +39,10 @@
                             valueField : 'orderNumber',
                             newline : false,
                             group:'订单明细',
-                            width: 120
+                            width: 120,
+                            validate: {
+                                required: true
+                            }
                             },
                             //公司名称
                             {
@@ -42,9 +50,12 @@
                                 	name:'companyIdLov',
                                 	type:'popup',
                                 	newline:false,
-                                	textField:'companyName',
                                 	valueField:'companyId',
+                                	textField:'companyName',
                                 	width: 120,
+                                	validate: {
+                                        required: true
+                                    },
                                 	editor:${lovService.getLov(base.contextPath,base.locale,"showCompany")} 
                             },
                             //客户名称
@@ -56,6 +67,9 @@
                             	textField:'customerName',
                             	valueField :'customerId',
                             	width: 120,
+                            	validate: {
+                                    required: true
+                                },
                             	options: $.extend(${lovService.getLov(base.contextPath, base.locale, "showCustomer")},{
                             	    onLoadData: function() {
                             	        this.setParm('companyId', $.ligerui.get('companyIdLov').getValue())
@@ -64,15 +78,48 @@
                            
                             },
                             //订单日期
-                               {
+                              /*  {
                                     display : '<@spring.message "hap.org.headers.orderDate"/>',
                                     name : 'orderDate',
                                     valueField : 'orderDate',
                                     align : 'left',
-                                    format : "yyyy-MM-dd",
                                     width : 120,
+                                    format : 'yyyy-MM-dd',
                                     type : 'date'
-                                },
+                                } */
+                                {
+                                    label : '<@spring.message "hap.org.headers.orderDate"/>',
+                                    name : 'orderDate',
+                                    newline : true,               
+                                    type :'date',
+                                    format : "yyyy-MM-dd",
+                       			 	width : 120,
+                       			 validate: {
+                                     required: true
+                                 },
+                    				options: {
+                    					showTime : true,
+                    	                format : "yyyy-MM-dd",
+                    	                onChangeDate: function (){
+                    	                	var g = this;
+                    	                    if (liger.get("orderDate").getValue() != null) {
+                    	                        var _orderDate = new Date(liger.get("orderDate").getValue());
+                    	                        var startDate = new Date('2016-01-01 00:00:00');
+                    	                        if (_orderDate.getTime() < startDate.getTime()) {
+                    	                            alert("只能选择2016年后的日期！");
+                    	                            g.clear();
+                    	                        }
+                    	                    }else{
+                    	                    	liger.setValue("orderDate", getCurrentDate());
+                    	                    }
+                    	                }
+                    	            },
+                       			 	validate : {
+                                    	required : true
+                                 	}
+                                }
+
+                                ,
                             //订单金额
                                {
                                     type : 'text',
@@ -85,11 +132,12 @@
                                 //订单状态
                                 {
                                     type : 'text',
-                                    label : '<@spring.message "hap.org.headers.orderStatus"/>',
+                                    label : '新建',
                                     name : 'orderStatus',
-                                    valueField:"orderStatus",
+                                    valueField:'新建',
+                                    textField:'"新建"',
                                     newline : false,
-                                    width: 120
+                                    width: 120,
                                 }
           ],
             buttons : [ {
@@ -98,20 +146,42 @@
                 width : 60,
                 click : dosave
             },
-            //�ϴ�
+            //提交
             {
-                text : '�����ϴ�',
-                disabled : false,
-                width : 60,
-                click : function() {
-                	window.popWin=$.ligerDialog.open({
-                		load :false,
-                		width : 800,
-                		height : 500,
-                		title :'<@spring.message "sysfile.upload"/>',
-                		url:'upLoadFile.html'
-                	})
-                }
+                text    : '<@spring.message "hap.a1"/>',
+                disabled: false,
+                width   : 60
+                
+            },
+            //审批
+            {
+                text    : '<@spring.message "hap.a2"/>',
+                disabled: false,
+                width   : 60
+            },
+            //拒绝
+            {
+                text    : '<@spring.message "hap.a3"/>',
+                disabled: false,
+                width   : 60
+            },
+            //整单删除
+            {
+                text    : '<@spring.message "hap.a4"/>',
+                disabled: false,
+                width   : 60
+            },
+            //单据打印
+            {
+                text    : '<@spring.message "hap.a5"/>',
+                disabled: false,
+                width   : 60
+            },
+            //
+            {
+                text    : '<@spring.message "hap.a6"/>',
+                disabled: false,
+                width   : 60
             }]
         });
        
@@ -266,7 +336,7 @@
             },
             enabledEdit : true,
             width : '99%',
-            height : '98%',
+            height : '334',
             checkbox : true
         });
     });

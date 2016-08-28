@@ -123,14 +123,128 @@
                                     width: 120
                                 }
           ],
-            enabledEdit : true,
-            width : '99%',
-            height : '98%',
-            checkbox : true
+         
+          enabledEdit : true,
+          width : '99%',
+          height : '200',
+          checkbox : true
         });
-
-    
-
+        /* window['order_detailGrid2'] = $("#order_detailGrid2").ligerGrid({
+            unSetValidateAttr : false,
+            columns : [{
+            //行号
+                display : '<@spring.message "hap.org.lines.lineNumber"/>',
+                name : 'lineNumber',
+                align : 'left',
+                width : 120
+            },
+            //物料编码
+        {
+    	display:'<@spring.message "hap.org.headers.itemCode"/>',
+    	name:'itemCode',
+    	type:'popup',
+    	width: 120,
+    	textField:'itemCode',
+    	editor:${lovService.getLov(base.contextPath,base.locale,"showitemcode")
+        }
+       ,
+        validate: {
+            required: true
+        }},
+        //物料描述
+        {
+                display : '<@spring.message "hap.org.items.itemDescription"/>',
+                name : 'itemDescription',
+                newline : false,
+                align : 'left',
+                width : 120,
+                textField:"itemDescription",
+                url: '${base.contextPath}/org/items/query',
+                onBeforeOpen: function() {
+                    //这里设置查询参数
+                    this.setParm('itemCode', liger.get('itemCode').getValue());
+                    this.triggerLoaded = false;//注意 
+                } 
+            },
+            //产品单位
+             {
+                type : 'text',
+                display : '<@spring.message "hap.org.lines.orderQuantityUom"/>',
+                name : 'orderQuantityUom',
+                newline : false,
+                width: 120,
+                textField:"orderQuantityUom",
+                url: '${base.contextPath}/ass/fruit/query',
+                onBeforeOpen: function() {
+                    //这里设置查询参数
+                    this.setParm('itemCode', liger.get('itemCode').getValue());
+                    this.triggerLoaded = false;//注意 
+                } 
+            },
+            //数量
+            {
+                type : 'text',
+                display : '<@spring.message "hap.org.lines.orderdQuantity"/>',
+                name : 'orderdQuantity',
+                newline : false,
+                width: 120,
+                editor : {
+                    type : 'text'
+                },
+                validate: {
+                    required: true
+                }
+            },
+            //销售单价
+            {
+                type : 'text',
+                display : '<@spring.message "hap.org.lines.unitSellingPrice"/>',
+                name : 'unitSellingPrice',
+                newline : false,
+                width: 120,
+                editor : {
+                    type : 'text'
+                },
+                validate: {
+                    required: true
+                }
+            },
+            //金额
+            {
+                display : '<@spring.message "hap.org.headers.orderMoney"/>',
+                name : 'orderMoney',
+                align : 'left',
+                width : 150,
+                newline : false,
+                editor : {
+                    type : 'text'
+                },
+                validate: {
+                    required: true
+                }
+            },
+            //备注
+            {
+                type : 'text',
+                display : '<@spring.message "hap.org.remark"/>',
+                name : 'remark',
+                newline : false,
+                width: 120,
+                editor : {
+                    type : 'text'
+                }
+            }
+            //编辑
+            /* {
+            	//�༭
+                display: '<@spring.message "hap.action"/>',
+                width  : 100,
+                align  : 'center',
+                render : function (rowdata) {
+                    return '<a href="#" onclick="editCode(' + rowdata.fruitId + ')"><@spring.message "hap.edit"/></a>'
+                }
+            } */
+       
 
     <#if isedit == '1'>
     Hap.loadForm({form:form,url:'${base.contextPath}/org/Headers/query',para:{headerId:${RequestParameters.headerId}}})

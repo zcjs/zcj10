@@ -9,7 +9,9 @@ import com.github.pagehelper.PageHelper;
 import com.hand.hap.core.IRequest;
 import com.hand.hap.system.service.impl.BaseServiceImpl;
 
+import hap.org.dto.Companys;
 import hap.org.dto.Headers;
+import hap.org.mapper.CompanysMapper;
 import hap.org.mapper.HeadersMapper;
 import hap.org.service.IHeadersService;
 
@@ -20,6 +22,8 @@ public class HeadersServiceImpl extends BaseServiceImpl<Headers> implements IHea
 
 	 @Autowired
 	    private HeadersMapper headersMapper;
+	 @Autowired
+	 private CompanysMapper companysMapper;
 
 		@Override
 		public List<Headers> selectByHeaders(IRequest requestContext, Headers headers, int page, int pagesize) {
@@ -32,13 +36,9 @@ public class HeadersServiceImpl extends BaseServiceImpl<Headers> implements IHea
 
 //插入
 	@Override
-		public void insertHeaders(IRequest requestContext, List<Headers> headerslist) {
+		public void insertHeaders(IRequest requestContext, Headers headers) {
 			// TODO Auto-generated method stub
-			for (Headers headers : headerslist) {
-				System.out.println(headers);
 				headersMapper.insertHeaders(headers);
-				System.out.println(headers);
-	        }
 		}
 
 
@@ -50,4 +50,11 @@ public class HeadersServiceImpl extends BaseServiceImpl<Headers> implements IHea
 	}
 
 
-}
+
+
+	@Override
+	public int selectby(IRequest requestContext, Companys companys) {
+		// TODO Auto-generated method stub
+		return headersMapper.selectby(companys);
+
+	}}

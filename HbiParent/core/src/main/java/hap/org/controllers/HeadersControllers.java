@@ -17,6 +17,7 @@ import com.hand.hap.core.IRequest;
 import com.hand.hap.system.controllers.BaseController;
 import com.hand.hap.system.dto.ResponseData;
 
+import hap.org.dto.Companys;
 import hap.org.dto.Headers;
 import hap.org.service.IHeadersService;
 @Controller
@@ -49,11 +50,17 @@ public class HeadersControllers extends BaseController{
 	    //插入
 	    @ResponseBody
 	    @RequestMapping(value = "/org/headers/submit",method = RequestMethod.POST)
-	    public ResponseData insertHeaders(HttpServletRequest request, @RequestBody List<Headers> headerslist)
+	    public void insertHeaders(HttpServletRequest request, @RequestBody List<Headers> headerslist)
 	    {    	
 	    	IRequest requestContext = createRequestContext(request);
-	    	System.out.println(headerslist);
-	    	return new ResponseData(iheadersService.insertHeaders(requestContext, headerslist));
+	    	String ss = headerslist.get(0).getCompanyName();
+	    	Companys com = new Companys();
+	    	com.setCompanyName(ss);
+	    	long s = iheadersService.selectby(requestContext, com);
+	    	
+	    	Headers headers =  headerslist.get(0);
+	    	headers.setCompanyId(s);
+	    	 iheadersService.insertHeaders(requestContext, headers);
 	    }
 	   
 	    
