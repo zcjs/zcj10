@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.hand.hap.mybatis.common.Mapper;
 
+import hap.org.dto.Companys;
 import hap.org.dto.Headers;
 
 public interface HeadersMapper extends Mapper<Headers>{

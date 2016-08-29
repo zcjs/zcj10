@@ -85,6 +85,9 @@
       <if test="orderStatus != null" >
         ORDER_STATUS,
       </if>
+       <if test="headerId != null" >
+        HEADER_ID,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNumber != null" >
@@ -101,6 +104,9 @@
       </if>
       <if test="orderStatus != null" >
         #{orderStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="headerId != null" >
+        #{headerId,jdbcType=DECIMAL},
       </if>
     </trim>
     </insert>
